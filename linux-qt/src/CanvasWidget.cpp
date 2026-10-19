@@ -124,6 +124,7 @@ void CanvasWidget::setNote(xn_note* note) {
     requestFrame();
     if (!note) return;
     editor_ = xn_editor_create(note, core_.host());
+    setDark(dark_);
     updateViewport();
     requestFrame();
 }
@@ -141,7 +142,11 @@ QRectF CanvasWidget::selectionRect() const {
 }
 
 void CanvasWidget::setDark(bool dark) {
-    if (!editor_) return;
+    dark_ = dark;
+    if (!editor_) {
+        requestFrame();
+        return;
+    }
     const xn_palette p = dark ? darkPalette() : lightPalette();
     xn_editor_set_palette(editor_, &p);
 }
@@ -173,7 +178,7 @@ bool CanvasWidget::event(QEvent* e) {
     case QEvent::TouchCancel:
         touchEvent(static_cast<QTouchEvent*>(e));
         return true;
-    case QEvent::DevicePixelRatioChange:
+    case QEvent::ScreenChangeInternal:
         updateViewport();
         requestFrame();
         break;
@@ -212,7 +217,7 @@ void CanvasWidget::requestFrame() {
 void CanvasWidget::renderFrame(QPainter& p, bool keptFrame) {
     lastDamage_ = QRectF();
     if (!editor_) {
-        p.fillRect(QRectF(0, 0, width(), height()), QColor(0x0a, 0x0a, 0x0a));
+        p.fillRect(QRectF(0, 0, width(), height()), dark_ ? QColor(0x0a, 0x0a, 0x0a) : QColor(0xe8, 0xe8, 0xe8));
         return;
     }
     double d[4];
@@ -238,7 +243,7 @@ void CanvasWidget::paintEvent(QPaintEvent*) {
     if (gl_) return;  // the GL view covers the canvas
     QPainter out(this);
     if (!editor_) {
-        out.fillRect(rect(), QColor(0x0a, 0x0a, 0x0a));
+        out.fillRect(rect(), dark_ ? QColor(0x0a, 0x0a, 0x0a) : QColor(0xe8, 0xe8, 0xe8));
         return;
     }
     // Composed in memory at device resolution, then copied out. The frame carries the device pixel
@@ -261,8 +266,8 @@ void CanvasWidget::send(int action, int actionIndex, int buttons, const std::vec
     if (!editor_ || pointers.empty()) return;
     if (!hover) {
         const int type = pointers.front().tool_type;
-        lastInput_ = type == XN_TOOL_TYPE_STYLUS ? QStringLiteral("перо") : type == XN_TOOL_TYPE_ERASER ? QStringLiteral("ластик")
-                   : type == XN_TOOL_TYPE_FINGER ? QStringLiteral("касание") : QStringLiteral("мышь");
+        lastInput_ = type == XN_TOOL_TYPE_STYLUS ? QStringLiteral("pen") : type == XN_TOOL_TYPE_ERASER ? QStringLiteral("eraser")
+                   : type == XN_TOOL_TYPE_FINGER ? QStringLiteral("touch") : QStringLiteral("mouse");
         lastPressure_ = pointers.front().pressure;
     }
     xn_pointer_event ev{};

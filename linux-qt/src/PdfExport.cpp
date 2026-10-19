@@ -23,11 +23,11 @@ QString writePdf(xn_note* note, const QString& path, xn_rgba paper, const std::f
     const xn_host* host = exportHost.host();
     const int pages = xn_note_page_count(note);
     const int dpi = xn_note_dpi(note);
-    if (pages <= 0 || dpi <= 0) return QStringLiteral("В заметке нет страниц");
+    if (pages <= 0 || dpi <= 0) return QStringLiteral("Note has no pages");
 
     // Written beside the target and moved over it only once complete.
     QSaveFile file(path);
-    if (!file.open(QIODevice::WriteOnly)) return QStringLiteral("Не удалось открыть %1 для записи").arg(path);
+    if (!file.open(QIODevice::WriteOnly)) return QStringLiteral("Failed to open %1 for writing").arg(path);
     {
         QPdfWriter writer(&file);
         writer.setCreator(QStringLiteral("xnotes"));
@@ -40,7 +40,7 @@ QString writePdf(xn_note* note, const QString& path, xn_rgba paper, const std::f
                                  QPageSize::ExactMatch);
             writer.setPageLayout(QPageLayout(size, QPageLayout::Portrait, QMarginsF(0, 0, 0, 0)));
             if (i == 0) {
-                if (!painter.begin(&writer)) return QStringLiteral("Не удалось начать PDF");
+                if (!painter.begin(&writer)) return QStringLiteral("Failed to initialize PDF writer");
             } else {
                 writer.newPage();
             }
@@ -54,6 +54,6 @@ QString writePdf(xn_note* note, const QString& path, xn_rgba paper, const std::f
         }
         painter.end();
     }
-    if (!file.commit()) return QStringLiteral("Не удалось записать %1").arg(path);
+    if (!file.commit()) return QStringLiteral("Failed to write %1").arg(path);
     return {};
 }

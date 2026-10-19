@@ -18,6 +18,7 @@ class QSlider;
 class QSpinBox;
 class QLabel;
 class QScrollBar;
+class QToolButton;
 class PageStylePopup;
 class PagesPanel;
 class QDockWidget;
@@ -26,6 +27,8 @@ class SelectionBar;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
+    enum class Theme { System, Light, Dark };
+
     MainWindow();
     ~MainWindow() override;
 
@@ -57,7 +60,12 @@ private:
     QLabel* pageLabel_;
     QLabel* zoomLabel_;
     QLabel* inputLabel_;
+    Theme theme_ = Theme::System;
     bool dark_ = true;
+    bool applyingTheme_ = false;
+    QToolButton* createButton_ = nullptr;
+    QToolButton* themeButton_ = nullptr;
+    QHash<QAction*, QString> actionIcons_;
     SelectionBar* selectionBar_;
     QPointer<PageStylePopup> pageStyle_;
     QSlider* width_;
@@ -88,6 +96,9 @@ private:
     void install(xn_note* note, std::unique_ptr<QTemporaryDir> workDir, const QString& path);
     void buildUi();
     void applyKind();
+    void setTheme(Theme theme);
+    void applyTheme();
+    void refreshIcons();
     /* Paper for pages without a colour of their own: the canvas's, in the panel and in exports. */
     xn_rgba paper() const { return dark_ ? 0x161616FFu : 0xFFFFFFFFu; }
     void refresh();
