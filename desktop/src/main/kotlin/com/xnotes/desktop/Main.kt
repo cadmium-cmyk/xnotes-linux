@@ -58,11 +58,13 @@ private class DesktopWindow : JFrame("xnotes") {
         minimumSize = Dimension(760, 480)
         preferredSize = Dimension(1100, 800)
         layout = BorderLayout(8, 8)
+        contentPane.background = Color.WHITE
         details.isEditable = false
         details.lineWrap = true
         details.wrapStyleWord = true
 
         val files = JPanel(FlowLayout(FlowLayout.LEADING, 4, 2)).apply {
+            background = Color.WHITE
             add(JButton("Open…").apply { addActionListener { chooseOpen() } })
             add(JButton("Save").apply { addActionListener { save(false) } })
             add(JButton("Save As…").apply { addActionListener { save(true) } })
@@ -88,6 +90,7 @@ private class DesktopWindow : JFrame("xnotes") {
             })
         }
         val tools = JPanel(FlowLayout(FlowLayout.LEADING, 4, 2)).apply {
+            background = Color.WHITE
             val group = ButtonGroup()
             for ((tool, label) in TOOLS) {
                 val button = JToggleButton(label).apply { addActionListener { selectTool(tool) } }
@@ -98,6 +101,7 @@ private class DesktopWindow : JFrame("xnotes") {
             add(colorButton.apply { addActionListener { chooseColor() } })
         }
         add(JPanel(BorderLayout()).apply {
+            background = Color.WHITE
             add(files, BorderLayout.NORTH)
             add(tools, BorderLayout.SOUTH)
         }, BorderLayout.NORTH)

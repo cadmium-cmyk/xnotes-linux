@@ -149,15 +149,15 @@ QPalette buildUiPalette(bool dark) {
         p.setColor(QPalette::Highlight, QColor(0x00, 0xe6, 0x76));
         p.setColor(QPalette::HighlightedText, QColor(0x0a, 0x0a, 0x0a));
     } else {
-        p.setColor(QPalette::Window, QColor(0xf4, 0xf4, 0xf4));
+        p.setColor(QPalette::Window, QColor(0xff, 0xff, 0xff));
         p.setColor(QPalette::WindowText, QColor(0x1c, 0x1c, 0x1c));
         p.setColor(QPalette::Base, QColor(0xff, 0xff, 0xff));
-        p.setColor(QPalette::AlternateBase, QColor(0xe8, 0xe8, 0xe8));
+        p.setColor(QPalette::AlternateBase, QColor(0xff, 0xff, 0xff));
         p.setColor(QPalette::ToolTipBase, QColor(0xff, 0xff, 0xff));
         p.setColor(QPalette::ToolTipText, QColor(0x1c, 0x1c, 0x1c));
         p.setColor(QPalette::Text, QColor(0x1c, 0x1c, 0x1c));
         p.setColor(QPalette::PlaceholderText, QColor(0x6f, 0x6f, 0x6f));
-        p.setColor(QPalette::Button, QColor(0xfb, 0xfb, 0xfb));
+        p.setColor(QPalette::Button, QColor(0xff, 0xff, 0xff));
         p.setColor(QPalette::ButtonText, QColor(0x1c, 0x1c, 0x1c));
         p.setColor(QPalette::BrightText, Qt::black);
         p.setColor(QPalette::Mid, QColor(0xc4, 0xc4, 0xc4));
@@ -250,6 +250,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::buildUi() {
     QToolBar* bar = addToolBar(QStringLiteral("Main"));
+    bar->setStyleSheet(QStringLiteral("QToolBar { border: none; }"));
     bar->setMovable(false);
     pagesAction_ = bar->addAction(xnIcon(QStringLiteral("sidebar")), QStringLiteral("Pages"));
     actionIcons_[pagesAction_] = QStringLiteral("sidebar");
@@ -348,6 +349,7 @@ void MainWindow::buildUi() {
 
     // Second row: tools and their style.
     QToolBar* tools = new QToolBar(QStringLiteral("Tools"), this);
+    tools->setStyleSheet(QStringLiteral("QToolBar { border: none; }"));
     addToolBarBreak();
     addToolBar(tools);
     tools->setMovable(false);
